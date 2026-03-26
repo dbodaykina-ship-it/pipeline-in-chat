@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { AnimatedDots } from './AnimatedDots';
 
 const imgChevronDownSmall = "/assets/chevron-down-small.svg";
 const imgExpand = "/assets/expand.svg";
@@ -164,15 +163,48 @@ export function ChatPanel() {
         
         {/* AI Response States */}
         <div className="flex flex-col items-start gap-2.5 w-[448px]">
-          {/* State 1 & 2: Shimmer + Bubble */}
-          {currentState < 3 && (
-            <div className="flex flex-col items-start gap-0 w-full">
+          {/* State header - shared position for shimmer and actions row */}
+          <div className="relative h-8 w-full">
+            {/* State 1 & 2: Shimmer text */}
+            <div className={`absolute inset-0 flex items-center transition-opacity duration-500 ${currentState < 3 ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
               <div className="inline-flex h-8 pt-1.5 pr-2 pb-1.5 pl-0 items-center gap-2">
                 <div className="text-[#8a7cf8]">
                   <AISparkleIcon />
                 </div>
                 <span className="text-sm animate-shimmer">Анализирую...</span>
               </div>
+            </div>
+            {/* State 3 & 4: Actions row */}
+            <div className={`absolute inset-0 flex items-center transition-opacity duration-500 ${currentState >= 3 ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
+              <button 
+                onClick={() => setIsAccordionOpen(!isAccordionOpen)}
+                className="group flex items-center h-8 pr-2 py-1.5 rounded w-full transition-colors cursor-pointer"
+              >
+                <div className="flex items-center gap-2">
+                  <div className="size-5 relative overflow-clip">
+                    <img src={imgAiSparkle} alt="" className="absolute inset-[10.6%] size-[79%]" />
+                  </div>
+                  <span className={`text-xs leading-4 tracking-tight whitespace-nowrap transition-colors ${isAccordionOpen ? 'text-white' : 'text-white/40 group-hover:text-white'}`}>
+                    3 шага выполнено
+                  </span>
+                </div>
+                <div className="size-5 relative">
+                  {isAccordionOpen ? (
+                    <div className="absolute inset-[43.75%_31.25%_33.75%_31.25%]">
+                      <img src={imgChevronDown} alt="" className="absolute block max-w-none size-full" />
+                    </div>
+                  ) : (
+                    <div className="absolute inset-[31.25%_33.75%_31.25%_43.75%]">
+                      <img src={imgChevronRight} alt="" className="absolute block max-w-none size-full" />
+                    </div>
+                  )}
+                </div>
+              </button>
+            </div>
+          </div>
+          
+          {/* State 2: Bubble */}
+          <div className={`flex flex-col items-start gap-0 w-full transition-all duration-500 ${currentState === 2 ? 'opacity-100' : 'opacity-0 h-0 overflow-hidden'}`}>
               {/* Bubble - State 2: Pipeline steps */}
               {currentState === 2 && (
                 <div className="flex flex-col items-start pl-6 gap-2.5 w-[448px]">
@@ -180,16 +212,7 @@ export function ChatPanel() {
                     className="relative flex w-[395px] h-[53px] pt-3 pr-2 pb-3 pl-2 items-start gap-2 rounded-sm backdrop-blur-[6px] overflow-hidden"
                     style={{ background: 'rgba(138, 124, 248, 0.08)' }}
                   >
-                  {/* Animated dots background - Rain effect */}
-                  <AnimatedDots
-                    className="absolute inset-0 w-full h-full"
-                    dotColor="rgba(138, 124, 248, 0.4)"
-                    dotSize={6}
-                    dotSpacing={12}
-                    speed={0.5}
-                    direction="down"
-                  />
-                  <div className="relative flex flex-1 gap-2 items-start h-full z-10">
+                  <div className="flex flex-1 gap-2 items-start h-full">
                     {/* Steps - animated scroll */}
                     <div className="flex flex-col items-start gap-1 self-stretch text-[10px] leading-3 tracking-tight overflow-hidden">
                       <div className="flex flex-col gap-2.5 animate-scroll-steps">
@@ -219,40 +242,10 @@ export function ChatPanel() {
                 </div>
               </div>
               )}
-            </div>
-          )}
+          </div>
           
-          {/* State 3 & 4: Actions row (remains visible in both states) */}
-          {currentState >= 3 && (
-            <div className="flex flex-col items-end w-[448px]">
-              {/* Clickable Actions row */}
-              <button 
-                onClick={() => setIsAccordionOpen(!isAccordionOpen)}
-                className="group flex items-center h-8 pr-2 py-1.5 rounded w-full transition-colors cursor-pointer"
-              >
-                <div className="flex items-center gap-2">
-                  <div className="size-5 relative overflow-clip">
-                    <img src={imgAiSparkle} alt="" className="absolute inset-[10.6%] size-[79%]" />
-                  </div>
-                  <span className={`text-xs leading-4 tracking-tight whitespace-nowrap transition-colors ${isAccordionOpen ? 'text-white' : 'text-white/40 group-hover:text-white'}`}>
-                    3 шага выполнено
-                  </span>
-                </div>
-                <div className="size-5 relative">
-                  {isAccordionOpen ? (
-                    <div className="absolute inset-[43.75%_31.25%_33.75%_31.25%]">
-                      <img src={imgChevronDown} alt="" className="absolute block max-w-none size-full" />
-                    </div>
-                  ) : (
-                    <div className="absolute inset-[31.25%_33.75%_31.25%_43.75%]">
-                      <img src={imgChevronRight} alt="" className="absolute block max-w-none size-full" />
-                    </div>
-                  )}
-                </div>
-              </button>
-              
-              {/* Accordion content - Pipeline steps */}
-              {isAccordionOpen && (
+          {/* Accordion content - Pipeline steps (State 3 & 4) */}
+          {isAccordionOpen && currentState >= 3 && (
                 <div className="flex items-start gap-2 overflow-clip pt-3 pr-4 pb-5 pl-2 rounded-sm w-[448px]">
                   {/* Vertical line */}
                   <div className="relative self-stretch shrink-0 w-1">
@@ -293,8 +286,6 @@ export function ChatPanel() {
                   </div>
                 </div>
               )}
-            </div>
-          )}
           
           {/* State 4: Message report (appears below Actions row) */}
           {currentState === 4 && (
