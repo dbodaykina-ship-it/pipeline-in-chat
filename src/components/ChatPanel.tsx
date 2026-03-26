@@ -162,7 +162,7 @@ export function ChatPanel() {
         </div>
         
         {/* AI Response States */}
-        <div className="flex flex-col items-start gap-2.5 w-[448px]">
+        <div className="flex flex-col items-start gap-2 w-[448px]">
           {/* State header - shared position for shimmer and actions row */}
           <div className="relative h-8 w-full">
             {/* State 1 & 2: Shimmer text */}
@@ -184,7 +184,7 @@ export function ChatPanel() {
                   <div className="size-5 relative overflow-clip">
                     <img src={imgAiSparkle} alt="" className="absolute inset-[10.6%] size-[79%]" />
                   </div>
-                  <span className={`text-xs leading-4 tracking-tight whitespace-nowrap transition-colors ${isAccordionOpen ? 'text-white' : 'text-white/40 group-hover:text-white'}`}>
+                  <span className={`text-sm leading-5 tracking-tight whitespace-nowrap transition-colors ${isAccordionOpen ? 'text-white' : 'text-white/40 group-hover:text-white'}`}>
                     3 шага выполнено
                   </span>
                 </div>
